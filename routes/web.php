@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,10 +28,8 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Kategori: index untuk semua user yang login
+    // Kategori
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-
-    // Kategori: CRUD hanya untuk admin (sesuai BR-06 dan matriks hak akses)
     Route::middleware('role:admin')->group(function () {
         Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
         Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
@@ -38,4 +37,19 @@ Route::middleware('auth')->group(function () {
         Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     });
+
+    // Produk: index untuk semua user yang login
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+
+// Produk: CRUD hanya untuk admin (DIDAFTARKAN SEBELUM route show!)
+Route::middleware('role:admin')->group(function () {
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+});
+
+// Produk: show (DIDAFTARKAN SETELAH route create)
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 });
