@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+     // Percayai semua proxy (standar untuk Railway/Heroku)
+    $middleware->trustProxies(at: '*');
+    
     $middleware->alias([
         'role' => \App\Http\Middleware\EnsureUserHasRole::class,
     ]);
