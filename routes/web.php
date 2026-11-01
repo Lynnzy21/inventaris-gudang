@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockTransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,18 +39,20 @@ Route::middleware('auth')->group(function () {
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     });
 
-    // Produk: index untuk semua user yang login
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    // Produk
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+        Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+        Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+        Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    });
+    Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
-// Produk: CRUD hanya untuk admin (DIDAFTARKAN SEBELUM route show!)
-Route::middleware('role:admin')->group(function () {
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-});
-
-// Produk: show (DIDAFTARKAN SETELAH route create)
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+    // Transaksi Stok (Staff & Admin)
+    Route::get('/transactions', [StockTransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions/create', [StockTransactionController::class, 'create'])->name('transactions.create');
+    Route::post('/transactions', [StockTransactionController::class, 'store'])->name('transactions.store');
+    Route::get('/transactions/{transaction}', [StockTransactionController::class, 'show'])->name('transactions.show');
 });

@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StockTransaction extends Model
 {
-    // PERHATIAN: 'user_id' TIDAK ada di sini. Diisi otomatis oleh server dari auth()->id().
+    // Tambahkan 'user_id' agar bisa diisi oleh controller lewat method create()
     protected $fillable = [
         'product_id',
+        'user_id',       // <-- TAMBAHKAN INI
         'type',
         'quantity',
         'note',
